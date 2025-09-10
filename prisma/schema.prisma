@@ -1,0 +1,211 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Employee {
+  employee_id      String    @id
+  full_name        String
+  dob              DateTime?
+  gender           String?
+  place_of_birth   String?
+  hometown         String?
+  nationality      String?
+  ethnicity        String?
+  religion         String?
+  marital_status   String?
+  health_status    String?
+  avatar_url String? @db.Text
+  // Relations
+  positionAssignments PositionAssignment[]
+  userAccounts        UserAccount[]
+  bonusDisciplines    BonusDiscipline[]
+  overtimes           Overtime[]
+  salaryAdvances      SalaryAdvance[]
+  timekeepings        Timekeeping[]
+  employeeAllowances  Employee_Allowance[]
+  insurances          Insurance[]
+  contracts           Contract[]
+
+  Leave Leave[]
+}
+
+model Department {
+  department_id   String    @id
+  department_name String?
+
+  positionAssignments PositionAssignment[]
+}
+
+model Position {
+  position_id   String    @id
+  position_name String
+
+  positionAssignments PositionAssignment[]
+}
+
+model PositionAssignment {
+  id              Int       @id @default(autoincrement())
+  employee_id     String
+  department_id   String
+  position_id     String
+  active        Boolean   @default(true)
+
+  employee    Employee   @relation(fields: [employee_id], references: [employee_id], onDelete: Cascade)
+  department  Department @relation(fields: [department_id], references: [department_id])
+  position    Position   @relation(fields: [position_id], references: [position_id])
+
+  @@unique([employee_id, department_id, position_id])
+}
+
+model UserAccount {
+  employee_id String
+  email       String @unique
+  phone       String? @unique
+  password    String
+  role        Int
+  note        String?
+
+  Employee Employee @relation(fields: [employee_id], references: [employee_id], onDelete: Cascade)
+
+  @@id([employee_id, email])
+}
+
+model BonusDiscipline {
+  id              Int     @id @default(autoincrement())
+  decision_number String?
+  reason          String?
+  date            DateTime?
+  employee_id     String
+  type            String?
+
+  employee Employee @relation(fields: [employee_id], references: [employee_id], onDelete: Cascade)
+}
+
+model Overtime {
+  id               Int     @id @default(autoincrement())
+  year             Int
+  month            Int
+  date             DateTime
+  hours            Float
+  employee_id      String
+  overtime_type_id Int
+
+  employee     Employee    @relation(fields: [employee_id], references: [employee_id], onDelete: Cascade)
+  overtimeType OvertimeType @relation(fields: [overtime_type_id], references: [overtime_type_id])
+}
+
+model OvertimeType {
+  overtime_type_id Int     @id @default(autoincrement())
+  name             String
+  coefficient      Float
+
+  overtimes Overtime[]
+}
+
+model SalaryAdvance {
+  id           Int     @id @default(autoincrement())
+  year         Int
+  month        Int
+  date         DateTime
+  amount       Float
+  status       String
+  employee_id  String
+
+  employee Employee @relation(fields: [employee_id], references: [employee_id], onDelete: Cascade)
+}
+
+model Timekeeping {
+  timekeeping_id Int      @id @default(autoincrement())
+  year           Int
+  month          Int
+  date           DateTime
+  checkin        DateTime?
+  checkout       DateTime?
+  work_hours     Float?
+  leave_hours    Float?
+  employee_id    String
+  work_type_id   Int
+
+  employee Employee @relation(fields: [employee_id], references: [employee_id], onDelete: Cascade)
+  workType WorkType @relation(fields: [work_type_id], references: [work_type_id])
+}
+
+model WorkType {
+  work_type_id Int     @id @default(autoincrement())
+  name         String
+  coefficient  Float
+
+  timekeepings Timekeeping[]
+}
+
+model Allowance {
+  allowance_id Int     @id @default(autoincrement())
+  name         String
+  amount       Float
+
+  employeeAllowances Employee_Allowance[]
+}
+
+model Employee_Allowance {
+  id           Int     @id @default(autoincrement())
+  employee_id  String
+  allowance_id Int
+  date         DateTime
+  reason       String?
+  amount       Float
+
+  employee  Employee @relation(fields: [employee_id], references: [employee_id], onDelete: Cascade)
+  allowance Allowance @relation(fields: [allowance_id], references: [allowance_id])
+}
+
+model Insurance {
+  insurance_id     Int     @id @default(autoincrement())
+  insurance_number String
+  issue_date       DateTime
+  expiry_date      DateTime
+  employee_id      String
+
+  employee Employee @relation(fields: [employee_id], references: [employee_id], onDelete: Cascade)
+}
+
+model Contract {
+  contract_id   Int     @id @default(autoincrement())
+  start_date    DateTime
+  end_date      DateTime
+  sign_date     DateTime
+  content       String?
+  salary_level  Float
+  duration      Int
+  contract_type String
+  employee_id   String
+
+  employee Employee @relation(fields: [employee_id], references: [employee_id], onDelete: Cascade)
+}
+model LeaveType {
+  leave_type_id Int     @id @default(autoincrement())
+  name          String
+  description   String?
+  max_days      Int?
+
+  // Quan hệ 1-nhiều với Leave
+  leaves        Leave[]
+}
+
+model Leave {
+  leave_id      Int       @id @default(autoincrement())
+  employee_id   String    // foreign key -> Employee.employee_id
+  leave_type_id Int
+  start_date    DateTime
+  end_date      DateTime
+  reason        String?
+  status        String    @default("PENDING") // PENDING, APPROVED, REJECTED
+
+  // Quan hệ
+  leaveType     LeaveType @relation(fields: [leave_type_id], references: [leave_type_id])
+  employee      Employee  @relation(fields: [employee_id], references: [employee_id], onDelete: Cascade)
+}

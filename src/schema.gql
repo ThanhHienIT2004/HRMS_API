@@ -1,0 +1,41 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input LoginDto {
+  email: String!
+  password: String!
+}
+
+type LoginResponse {
+  accessToken: String
+  refreshToken: String
+}
+
+type Mutation {
+  login(userData: LoginDto!): LoginResponse!
+  register(userData: RegisterDto!): UserAccount!
+}
+
+type Query {
+  hello: String!
+}
+
+input RegisterDto {
+  email: String!
+  employee_id: String!
+  password: String!
+  phone: String
+
+  """Role of the user"""
+  role: String = "USER"
+}
+
+type UserAccount {
+  email: String!
+  employee_id: String!
+  note: String
+  password: String!
+  phone: String
+  role: Int!
+}
