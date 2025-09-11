@@ -8,18 +8,18 @@ datasource db {
 }
 
 model Employee {
-  employee_id      String    @id
-  full_name        String
-  dob              DateTime?
-  gender           String?
-  place_of_birth   String?
-  hometown         String?
-  nationality      String?
-  ethnicity        String?
-  religion         String?
-  marital_status   String?
-  health_status    String?
-  avatar_url String? @db.Text
+  employee_id         String               @id
+  full_name           String
+  dob                 DateTime?
+  gender              String?
+  place_of_birth      String?
+  hometown            String?
+  nationality         String?
+  ethnicity           String?
+  religion            String?
+  marital_status      String?
+  health_status       String?
+  avatar_url          String?              @db.Text
   // Relations
   positionAssignments PositionAssignment[]
   userAccounts        UserAccount[]
@@ -35,36 +35,36 @@ model Employee {
 }
 
 model Department {
-  department_id   String    @id
+  department_id   String  @id
   department_name String?
 
   positionAssignments PositionAssignment[]
 }
 
 model Position {
-  position_id   String    @id
+  position_id   String @id
   position_name String
 
   positionAssignments PositionAssignment[]
 }
 
 model PositionAssignment {
-  id              Int       @id @default(autoincrement())
-  employee_id     String
-  department_id   String
-  position_id     String
-  active        Boolean   @default(true)
+  id            Int     @id @default(autoincrement())
+  employee_id   String
+  department_id String
+  position_id   String
+  active        Boolean @default(true)
 
-  employee    Employee   @relation(fields: [employee_id], references: [employee_id], onDelete: Cascade)
-  department  Department @relation(fields: [department_id], references: [department_id])
-  position    Position   @relation(fields: [position_id], references: [position_id])
+  employee   Employee   @relation(fields: [employee_id], references: [employee_id], onDelete: Cascade)
+  department Department @relation(fields: [department_id], references: [department_id])
+  position   Position   @relation(fields: [position_id], references: [position_id])
 
   @@unique([employee_id, department_id, position_id])
 }
 
 model UserAccount {
   employee_id String
-  email       String @unique
+  email       String  @unique
   phone       String? @unique
   password    String
   role        Int
@@ -76,7 +76,7 @@ model UserAccount {
 }
 
 model BonusDiscipline {
-  id              Int     @id @default(autoincrement())
+  id              Int       @id @default(autoincrement())
   decision_number String?
   reason          String?
   date            DateTime?
@@ -87,7 +87,7 @@ model BonusDiscipline {
 }
 
 model Overtime {
-  id               Int     @id @default(autoincrement())
+  id               Int      @id @default(autoincrement())
   year             Int
   month            Int
   date             DateTime
@@ -95,12 +95,12 @@ model Overtime {
   employee_id      String
   overtime_type_id Int
 
-  employee     Employee    @relation(fields: [employee_id], references: [employee_id], onDelete: Cascade)
+  employee     Employee     @relation(fields: [employee_id], references: [employee_id], onDelete: Cascade)
   overtimeType OvertimeType @relation(fields: [overtime_type_id], references: [overtime_type_id])
 }
 
 model OvertimeType {
-  overtime_type_id Int     @id @default(autoincrement())
+  overtime_type_id Int    @id @default(autoincrement())
   name             String
   coefficient      Float
 
@@ -108,21 +108,19 @@ model OvertimeType {
 }
 
 model SalaryAdvance {
-  id           Int     @id @default(autoincrement())
-  year         Int
-  month        Int
-  date         DateTime
-  amount       Float
-  status       String
-  employee_id  String
+  id          Int      @id @default(autoincrement())
+  year        Int
+  month       Int
+  date        DateTime
+  amount      Float
+  status      String
+  employee_id String
 
   employee Employee @relation(fields: [employee_id], references: [employee_id], onDelete: Cascade)
 }
 
 model Timekeeping {
-  timekeeping_id Int      @id @default(autoincrement())
-  year           Int
-  month          Int
+  timekeeping_id Int       @id @default(autoincrement())
   date           DateTime
   checkin        DateTime?
   checkout       DateTime?
@@ -136,7 +134,7 @@ model Timekeeping {
 }
 
 model WorkType {
-  work_type_id Int     @id @default(autoincrement())
+  work_type_id Int    @id @default(autoincrement())
   name         String
   coefficient  Float
 
@@ -144,7 +142,7 @@ model WorkType {
 }
 
 model Allowance {
-  allowance_id Int     @id @default(autoincrement())
+  allowance_id Int    @id @default(autoincrement())
   name         String
   amount       Float
 
@@ -152,19 +150,19 @@ model Allowance {
 }
 
 model Employee_Allowance {
-  id           Int     @id @default(autoincrement())
+  id           Int      @id @default(autoincrement())
   employee_id  String
   allowance_id Int
   date         DateTime
   reason       String?
   amount       Float
 
-  employee  Employee @relation(fields: [employee_id], references: [employee_id], onDelete: Cascade)
+  employee  Employee  @relation(fields: [employee_id], references: [employee_id], onDelete: Cascade)
   allowance Allowance @relation(fields: [allowance_id], references: [allowance_id])
 }
 
 model Insurance {
-  insurance_id     Int     @id @default(autoincrement())
+  insurance_id     Int      @id @default(autoincrement())
   insurance_number String
   issue_date       DateTime
   expiry_date      DateTime
@@ -174,7 +172,7 @@ model Insurance {
 }
 
 model Contract {
-  contract_id   Int     @id @default(autoincrement())
+  contract_id   Int      @id @default(autoincrement())
   start_date    DateTime
   end_date      DateTime
   sign_date     DateTime
@@ -186,6 +184,7 @@ model Contract {
 
   employee Employee @relation(fields: [employee_id], references: [employee_id], onDelete: Cascade)
 }
+
 model LeaveType {
   leave_type_id Int     @id @default(autoincrement())
   name          String
@@ -193,19 +192,19 @@ model LeaveType {
   max_days      Int?
 
   // Quan hệ 1-nhiều với Leave
-  leaves        Leave[]
+  leaves Leave[]
 }
 
 model Leave {
-  leave_id      Int       @id @default(autoincrement())
-  employee_id   String    // foreign key -> Employee.employee_id
+  leave_id      Int      @id @default(autoincrement())
+  employee_id   String // foreign key -> Employee.employee_id
   leave_type_id Int
   start_date    DateTime
   end_date      DateTime
   reason        String?
-  status        String    @default("PENDING") // PENDING, APPROVED, REJECTED
+  status        String   @default("PENDING") // PENDING, APPROVED, REJECTED
 
   // Quan hệ
-  leaveType     LeaveType @relation(fields: [leave_type_id], references: [leave_type_id])
-  employee      Employee  @relation(fields: [employee_id], references: [employee_id], onDelete: Cascade)
+  leaveType LeaveType @relation(fields: [leave_type_id], references: [leave_type_id])
+  employee  Employee  @relation(fields: [employee_id], references: [employee_id], onDelete: Cascade)
 }

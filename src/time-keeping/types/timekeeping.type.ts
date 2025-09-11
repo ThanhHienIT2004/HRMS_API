@@ -7,12 +7,6 @@ export class Timekeeping {
   @Field(() => Int)
   timekeeping_id: number;
 
-  @Field(() => Int)
-  year: number;
-
-  @Field(() => Int)
-  month: number;
-
   @Field()
   date: Date;
 
@@ -43,12 +37,6 @@ export class Timekeeping {
 
 @InputType()
 export class CreateTimekeepingInput {
-  @Field(() => Int)
-  year: number;
-
-  @Field(() => Int)
-  month: number;
-
   @Field()
   date: Date;
 
