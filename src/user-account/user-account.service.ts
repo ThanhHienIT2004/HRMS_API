@@ -74,7 +74,7 @@ export class UserAccountService {
 
   async forgotPassword(email: string): Promise<boolean> {
     const user = await this.prisma.userAccount.findFirst({ where: { email } });
-    if (!user) return true; // Tránh lộ email tồn tại
+    if (!user) return false; // Tránh lộ email tồn tại
 
     const otp = this.otpService.generate(); // ví dụ: random 6 số
     this.otpService.saveOtp(email, otp); // lưu DB hoặc cache

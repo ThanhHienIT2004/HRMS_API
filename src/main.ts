@@ -19,7 +19,7 @@ async function bootstrap() {
   app.useGlobalFilters(new GraphQLExceptionFilter());
 
   app.enableCors({
-    origin: ["https://hrms-lugq.vercel.app"],
+    origin: ["https://hrms-lugq.vercel.app", "http://localhost:3001"],
     methods: ['GET', 'POST', 'OPTIONS'],
     credentials: true,
   });

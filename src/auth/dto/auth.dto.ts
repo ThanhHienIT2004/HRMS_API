@@ -33,6 +33,8 @@ export class RegisterDto {
   role: number;
 
   @Field(() => String)
+  @IsNotEmpty({ message: 'employee_id không được để trống' })
+  @IsString({ message: 'employee_id phải là chuỗi' })
   employee_id: string;
 }
 

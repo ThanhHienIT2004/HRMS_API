@@ -16,17 +16,32 @@ export class AuthService {
 ) {}
 
   async register(userData: RegisterDto): Promise<UserAccount> {
+    // Kiểm tra email đã tồn tại
     const user = await this.prismaService.userAccount.findUnique({
-      where: { email: userData.email, },
+      where: { email: userData.email },
     });
     if (user) {
       throw new HttpException(
-        { message: 'email đã tồn tại!' },
+        { message: 'Email đã tồn tại!' },
         HttpStatus.BAD_REQUEST,
       );
     }
+
+    // Kiểm tra employee_id có tồn tại hay không
+    const employee = await this.prismaService.employee.findUnique({
+      where: { employee_id: userData.employee_id },
+    });
+    if (!employee) {
+      throw new HttpException(
+        { message: 'Mã nhân viên không tồn tại!' },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    // Mã hóa mật khẩu
     const hashPass = await hash(userData.password, 10);
 
+    // Tạo tài khoản và connect với employee
     return this.prismaService.userAccount.create({
       data: {
         email: userData.email,
@@ -34,11 +49,10 @@ export class AuthService {
         role: userData.role,
         password: hashPass,
         Employee: {
-          connect: { employee_id: userData.employee_id }, // chỉ connect, không thêm trực tiếp employee_id
+          connect: { employee_id: userData.employee_id },
         },
       },
     });
-
   }
 
   async login(userData: LoginDto): Promise<LoginResponse> {

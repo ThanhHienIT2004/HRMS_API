@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateDepartmentInput, UpdateDepartmentInput } from './types/department.type';
 import { PrismaService } from '../prisma/prisma.service';
+import { ExcelService } from '../excel/excel.service';
 
 @Injectable()
 export class DepartmentService {
@@ -51,4 +52,7 @@ export class DepartmentService {
   async remove(department_id: string) {
     return this.prisma.department.delete({ where: { department_id } });
   }
+
+
+
 }
