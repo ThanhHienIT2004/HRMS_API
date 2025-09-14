@@ -13,7 +13,7 @@ import { join } from 'path';
         secure: false,
         auth: {
           user: process.env.MAIL_USER || 'apikey',
-          pass: process.env.MAIL_PASS || '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',
+          pass: process.env.MAIL_PASS || 'your-sendgrid-api-key',
         },
       },
       defaults: {
